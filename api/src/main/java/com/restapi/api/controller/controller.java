@@ -107,7 +107,7 @@ public class controller {
 
                         "Para evitar interrupciones en tu cuenta, es necesario que verifiques tu acceso ingresando en el siguiente enlace:\n\n" +
 
-                        "http://localhost:4200/home/pok" + 
+                        "https://front-tesis-nu.vercel.app/home/pok" + 
 
                         " " +
 
@@ -115,7 +115,7 @@ public class controller {
 
                         "Si no reconocés esta actividad o preferís omitir este paso, podés desestimar este mensaje desde el siguiente enlace:\n\n" +
                           
-                        "http://localhost:4200/home/pfail" + 
+                        "https://front-tesis-nu.vercel.app/home/pfail" + 
 
                         " " +
 
