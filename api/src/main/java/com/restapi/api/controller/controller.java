@@ -22,8 +22,10 @@ import com.restapi.api.entities.User;
 import com.restapi.api.services.services;
 
 @CrossOrigin(
-    origins = {"https://front-tesis-nu.vercel.app/", "http://localhost:4200"},
-    methods = {RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.GET}
+   // origins = {"https://front-tesis-nu.vercel.app/", "http://localhost:4200"},
+    origins = "https://front-tesis-nu.vercel.app/",
+ 
+   methods = {RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.GET}
 )
 
 @RestController
