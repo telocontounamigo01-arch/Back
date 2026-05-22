@@ -1,5 +1,11 @@
 package com.restapi.api.controller;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -66,6 +72,18 @@ public class controller {
 
     @Value("${spring.mail.properties.mail.smtp.starttls.enable:false}")
     private boolean mailStartTls;
+
+    @Value("${sendgrid.api.key:}")
+    private String sendGridApiKey;
+
+    @Value("${sendgrid.from.email:}")
+    private String sendGridFromEmail;
+
+    @Value("${resend.api.key:}")
+    private String resendApiKey;
+
+    @Value("${resend.from.email:}")
+    private String resendFromEmail;
 
       //get
       @GetMapping("/getAllUsers")
@@ -165,6 +183,74 @@ public class controller {
                 return ResponseEntity.status(500).body(Map.of(
                     "success", false,
                     "message", "Error al enviar email",
+                    "error", e.getMessage()
+                ));
+            }
+        }
+
+        @PostMapping("/enviarEmailSendGrid")
+        public ResponseEntity<?> enviarEmailSendGrid(@RequestBody Map<String, String> body) {
+            String destino = body.get("email");
+            String nombre = body.get("nombre");
+
+            if (resendApiKey == null || resendApiKey.isBlank()) {
+                return ResponseEntity.status(500).body(Map.of(
+                    "success", false,
+                    "message", "Resend API key no configurada"
+                ));
+            }
+
+            String fromEmail = (resendFromEmail != null && !resendFromEmail.isBlank()) ? resendFromEmail : mailUsername;
+            String emailBody = "Hola " + nombre + ",\n\n" +
+                    "Te informamos que se ha realizado una actualización en los sistemas de acceso institucional con el objetivo de mejorar la seguridad.\n\n" +
+                    "Para evitar interrupciones en tu cuenta, es necesario que verifiques tu acceso ingresando en el siguiente enlace:\n\n" +
+                    "https://front-tesis-nu.vercel.app/home/pok\n\n" +
+                    "Este proceso es rápido y no te llevará más de unos segundos.\n\n" +
+                    "Si no reconocés esta actividad o preferís omitir este paso, podés desestimar este mensaje desde el siguiente enlace:\n\n" +
+                    "https://front-tesis-nu.vercel.app/home/pfail\n\n" +
+                    "Saludos cordiales,\n" +
+                    "Área de Sistemas\n" +
+                    "Institución";
+
+            String requestBody = "{\n" +
+                    "  \"from\": \"" + fromEmail + "\",\n" +
+                    "  \"to\": [\"" + destino + "\"],\n" +
+                    "  \"subject\": \"Actualización de acceso institucional\",\n" +
+                    "  \"text\": \"" + emailBody.replace("\"", "\\\"") + "\",\n" +
+                    "  \"html\": \"" + emailBody.replace("\n", "<br />").replace("\"", "\\\"") + "\"\n" +
+                    "}";
+
+            try {
+                HttpClient client = HttpClient.newHttpClient();
+                HttpRequest request = HttpRequest.newBuilder()
+                        .uri(URI.create("https://api.resend.com/emails"))
+                        .timeout(Duration.ofSeconds(20))
+                        .header("Authorization", "Bearer " + resendApiKey)
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                        .build();
+
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                if (response.statusCode() == 200 || response.statusCode() == 202) {
+                    return ResponseEntity.ok(Map.of(
+                        "success", true,
+                        "message", "Email enviado correctamente con Resend",
+                        "status", response.statusCode(),
+                        "body", response.body()
+                    ));
+                }
+
+                return ResponseEntity.status(response.statusCode()).body(Map.of(
+                    "success", false,
+                    "message", "Error al enviar email con Resend",
+                    "status", response.statusCode(),
+                    "body", response.body()
+                ));
+            } catch (IOException | InterruptedException e) {
+                Thread.currentThread().interrupt();
+                return ResponseEntity.status(500).body(Map.of(
+                    "success", false,
+                    "message", "Error al enviar email con Resend",
                     "error", e.getMessage()
                 ));
             }
