@@ -38,11 +38,8 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 @CrossOrigin(
-    origins = {"http://localhost:4200", "http://127.0.0.1:4200"},
-    allowedHeaders = "*",
-    exposedHeaders = "*",
-    methods = {RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.GET},
-    maxAge = 3600
+    origins = "https://front-tesis-nu.vercel.app/",
+    methods = {RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.GET}
 )
 
 @RestController
