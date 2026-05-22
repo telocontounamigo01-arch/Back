@@ -33,7 +33,7 @@ import jakarta.mail.internet.MimeMessage;
 
 @CrossOrigin(
    // origins = {"https://front-tesis-nu.vercel.app/", "http://localhost:4200"},
-    origins = "https://front-tesis-nu.vercel.app/",
+    origins = "http://localhost:4200",
  
    methods = {RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.GET}
 )
