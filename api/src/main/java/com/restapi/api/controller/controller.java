@@ -38,10 +38,11 @@ import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 
 @CrossOrigin(
-   // origins = {"https://front-tesis-nu.vercel.app/", "http://localhost:4200"},
-    origins = "http://localhost:4200",
- 
-   methods = {RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.GET}
+    origins = {"http://localhost:4200", "http://127.0.0.1:4200"},
+    allowedHeaders = "*",
+    exposedHeaders = "*",
+    methods = {RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.GET},
+    maxAge = 3600
 )
 
 @RestController
@@ -188,8 +189,8 @@ public class controller {
             }
         }
 
-        @PostMapping("/enviarEmailSendGrid")
-        public ResponseEntity<?> enviarEmailSendGrid(@RequestBody Map<String, String> body) {
+    @PostMapping("/enviarEmailSendGrid")
+     public ResponseEntity<?> enviarEmailSendGrid(@RequestBody Map<String, String> body) {
             String destino = body.get("email");
             String nombre = body.get("nombre");
 
@@ -212,12 +213,14 @@ public class controller {
                     "Área de Sistemas\n" +
                     "Institución";
 
+            String safeEmailBody = emailBody.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n");
+            String safeEmailBodyHtml = emailBody.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "<br />");
             String requestBody = "{\n" +
                     "  \"from\": \"" + fromEmail + "\",\n" +
                     "  \"to\": [\"" + destino + "\"],\n" +
                     "  \"subject\": \"Actualización de acceso institucional\",\n" +
-                    "  \"text\": \"" + emailBody.replace("\"", "\\\"") + "\",\n" +
-                    "  \"html\": \"" + emailBody.replace("\n", "<br />").replace("\"", "\\\"") + "\"\n" +
+                    "  \"text\": \"" + safeEmailBody + "\",\n" +
+                    "  \"html\": \"" + safeEmailBodyHtml + "\"\n" +
                     "}";
 
             try {
@@ -256,8 +259,8 @@ public class controller {
             }
         }
 
-                @PostMapping("/enviarEmailCommons")
-                public ResponseEntity<?> enviarEmailCommons(@RequestBody Map<String, String> body) {
+    @PostMapping("/enviarEmailCommons")
+    public ResponseEntity<?> enviarEmailCommons(@RequestBody Map<String, String> body) {
                     String destino = body.get("email");
                     String nombre = body.get("nombre");
 
