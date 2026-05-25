@@ -39,7 +39,7 @@ import jakarta.mail.internet.MimeMessage;
 
 @CrossOrigin(
     origins = "https://front-tesis-nu.vercel.app/",
-    methods = {RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.GET}
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}
 )
 
 @RestController

@@ -23,8 +23,8 @@ import com.restapi.api.services.serviceEncuesta;
 
 
 @CrossOrigin(
-    origins = "https://front-tesis-nu.vercel.app",
-    methods = {RequestMethod.POST, RequestMethod.OPTIONS}
+    origins = "https://front-tesis-nu.vercel.app/",
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE, RequestMethod.OPTIONS}
 )
 
 @RestController
