@@ -11,5 +11,6 @@ public interface interfaceUserDAO {
     String updateUser(Long ID ,User user);
     User userFindByID(Long ID);
     List<User> getAllUsers();    
+    User findByEmail(String email);
     User findByEmailAndPassword(String email, String password);
 }

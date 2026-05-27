@@ -35,11 +35,19 @@ public class services  {
 
 
      public String createUser(User user){
-      try {
-        return userDAO.createUser(user);        
-      } catch (Exception e) {
-        return "FAIL";
+      if (user == null || user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+        throw new IllegalArgumentException("El usuario y email no pueden estar vacíos");
       }
+
+      String email = user.getEmail().trim().toLowerCase();
+      User existingUser = userDAO.findByEmail(email);
+
+      if (existingUser != null) {
+        throw new IllegalArgumentException("El email ya está registrado");
+      }
+
+      user.setEmail(email);
+      return userDAO.createUser(user);
      }
 
 

@@ -95,6 +95,21 @@ public class userDAOimp implements interfaceUserDAO {
 
     @Override
     @Transactional
+    public User findByEmail(String email) {
+        try {
+            String jpql = "SELECT u FROM User u WHERE u.Email = :email";
+            List<User> result = entityManager
+                    .createQuery(jpql, User.class)
+                    .setParameter("email", email)
+                    .getResultList();
+            return result.isEmpty() ? null : result.get(0);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional
     public User findByEmailAndPassword(String email, String password) {
         try {
 
